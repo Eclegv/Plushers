@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour {
 
-    public float speed = 10f;
+    public float speed = 1f;
 
 	// Use this for initialization
 	void Start () {
@@ -15,6 +15,6 @@ public class PlayerScript : MonoBehaviour {
 	void Update () {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         float dir = Input.GetAxis("Horizontal");
-        rb.velocity += new Vector2(dir, 0) * speed;
+        rb.velocity += new Vector2(dir / 2, 0) * speed;
 	}
 }
