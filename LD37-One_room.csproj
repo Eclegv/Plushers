@@ -75,6 +75,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\OursonAI.cs" />
+    <Compile Include="Assets\Scripts\OursonHoleDetect.cs" />
+    <Compile Include="Assets\Scripts\OursonWallCheck.cs" />
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,16 +5,66 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour {
 
     public float speed = 1f;
+    public float jumpPower = 10f;
+    public Camera cam;
+    private Animator anim;
+    private Rigidbody2D rb;
+    private bool canJump = true;
+    private List<Collider2D> grounds;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        grounds = new List<Collider2D>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.name.Contains("Ground"))
+        {
+            grounds.Add(collision);
+            canJump = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.name.Contains("Ground"))
+        {
+            grounds.Remove(collision);
+        }
+        if (grounds.Count == 0)
+            canJump = false;
+    }
+
+    // Update is called once per frame
+    void Update () {
+        
         float dir = Input.GetAxis("Horizontal");
-        rb.velocity += new Vector2(dir / 2, 0) * speed;
+        rb.velocity += new Vector2(dir, 0) * speed;
+        if (dir < 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else if (dir > 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        anim.SetBool("Walking", rb.velocity.x >= 0.1f || rb.velocity.x <= -0.1f);
+
+        if (Input.GetButtonDown("Jump") && canJump)
+        {
+            rb.velocity += new Vector2(rb.velocity.x, jumpPower);
+            canJump = false;
+        }
+        if (cam != null)
+        {
+            cam.transform.position = new Vector3(transform.position.x, transform.position.y, cam.transform.position.z);
+        }
 	}
+
+    void FixedUpdate()
+    {
+        rb.velocity = new Vector2(rb.velocity.x / 1.2f, rb.velocity.y);
+    }
 }
