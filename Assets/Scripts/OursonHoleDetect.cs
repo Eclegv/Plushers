@@ -20,6 +20,7 @@ public class OursonHoleDetect : MonoBehaviour {
             grounds.Add(collision);
         }
     }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.name.Contains("Ground"))
