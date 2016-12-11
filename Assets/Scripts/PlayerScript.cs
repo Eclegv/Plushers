@@ -17,6 +17,8 @@ public class PlayerScript : MonoBehaviour {
     private Rigidbody2D rb;
     private bool canJump = true;
     private List<Collider2D> grounds;
+    private GameObject scripts;
+    private PlayerPlatformManager platforms;
 
 
 	// Use this for initialization
@@ -24,6 +26,8 @@ public class PlayerScript : MonoBehaviour {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         grounds = new List<Collider2D>();
+        scripts = GameObject.Find("Scripts");
+        platforms = scripts.GetComponents<PlayerPlatformManager>()[0];
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -85,7 +89,11 @@ public class PlayerScript : MonoBehaviour {
 
             if (Input.GetButtonDown("Fire3"))
             {
-                Instantiate(corpses[Random.Range(0, corpses.Count)], transform.position - new Vector3(0, 0.50f, 0), Quaternion.identity);
+                if (platforms.GetCount() > 0)
+                {
+                    Instantiate(corpses[Random.Range(0, corpses.Count)], transform.position - new Vector3(0, 0.50f, 0), Quaternion.identity);
+                    platforms.RemoveOurson(1);
+                }
             }
 
             if (fireCdleft > 0)

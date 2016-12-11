@@ -44,6 +44,7 @@ public class OursonAI : MonoBehaviour {
             dieTimeLeft -= Time.deltaTime;
             if (dieTimeLeft <= 0)
             {
+                GameObject.Find("Scripts").GetComponents<PlayerPlatformManager>()[0].AddOurson(1);
                 Destroy(transform.gameObject);
                 return;
             }
