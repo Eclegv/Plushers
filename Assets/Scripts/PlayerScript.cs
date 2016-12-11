@@ -9,8 +9,10 @@ public class PlayerScript : MonoBehaviour {
     public Camera cam;
     public GameObject bullet;
     public float fireCoolDown;
+    public List<GameObject> corpses;
 
     private float fireCdleft = 0;
+    private float moveAfterFire = 0;
     private Animator anim;
     private Rigidbody2D rb;
     private bool canJump = true;
@@ -26,7 +28,7 @@ public class PlayerScript : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.name.Contains("Ground"))
+        if (collision.gameObject.name.Contains("Ground") || collision.gameObject.name.Contains("Mort"))
         {
             grounds.Add(collision);
             canJump = true;
@@ -34,7 +36,7 @@ public class PlayerScript : MonoBehaviour {
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.name.Contains("Ground"))
+        if (collision.gameObject.name.Contains("Ground") || collision.gameObject.name.Contains("Mort"))
         {
             grounds.Remove(collision);
         }
@@ -44,40 +46,64 @@ public class PlayerScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        
-        float dir = Input.GetAxis("Horizontal");
-        rb.velocity += new Vector2(dir, 0) * speed;
-        if (dir < 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-        else if (dir > 0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-        anim.SetBool("Walking", rb.velocity.x >= 0.1f || rb.velocity.x <= -0.1f);
-
-        if (Input.GetButtonDown("Jump") && canJump)
-        {
-            rb.velocity += new Vector2(rb.velocity.x, jumpPower);
-            canJump = false;
-        }
         if (cam != null)
         {
             cam.transform.position = new Vector3(transform.position.x, transform.position.y, cam.transform.position.z);
         }
 
-        if (fireCdleft > 0)
-            fireCdleft -= Time.deltaTime;
-        if (Input.GetButton("Fire1") && fireCdleft <= 0)
+        if (moveAfterFire > 0)
         {
-            fireCdleft = fireCoolDown;
-            if (transform.localScale.x >= 0)
-                Instantiate(bullet, transform.position, Quaternion.FromToRotation(Vector3.up, Vector3.left));
-            else
-                Instantiate(bullet, transform.position, Quaternion.FromToRotation(Vector3.up, Vector3.right));
+            moveAfterFire -= Time.deltaTime;
+            if (moveAfterFire <= 0)
+            {
+                if (transform.localScale.x < 0)
+                    Instantiate(bullet, transform.position - new Vector3(0, 0.1f, 0), Quaternion.FromToRotation(Vector3.up, Vector3.left));
+                else
+                    Instantiate(bullet, transform.position - new Vector3(0, 0.1f, 0), Quaternion.FromToRotation(Vector3.up, Vector3.right));
+            }
         }
+        else
+        {
+            anim.SetBool("Shooting", false);
+            float dir = Input.GetAxis("Horizontal");
+            rb.velocity += new Vector2(dir, 0) * speed;
+            if (dir < 0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+            else if (dir > 0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            anim.SetBool("Walking", rb.velocity.x >= 0.1f || rb.velocity.x <= -0.1f);
 
+            if (Input.GetButtonDown("Jump") && canJump)
+            {
+                rb.velocity += new Vector2(rb.velocity.x, jumpPower);
+                canJump = false;
+            }
+
+            if (Input.GetButtonDown("Fire3"))
+            {
+                Instantiate(corpses[Random.Range(0, corpses.Count)], transform.position - new Vector3(0, 0.50f, 0), Quaternion.identity);
+            }
+
+            if (fireCdleft > 0)
+                fireCdleft -= Time.deltaTime;
+            if (Input.GetButton("Fire1") && fireCdleft <= 0)
+            {
+                fireCdleft = fireCoolDown;
+                /*if (transform.localScale.x < 0)
+                    Instantiate(bullet, transform.position, Quaternion.FromToRotation(Vector3.up, Vector3.left));
+                else
+                    Instantiate(bullet, transform.position, Quaternion.FromToRotation(Vector3.up, Vector3.right));*/
+                moveAfterFire = 0.2f;
+                anim.SetBool("Shooting", true);
+            }
+
+            anim.SetBool("Jumping", rb.velocity.y > 0.01f);
+            anim.SetBool("Falling", rb.velocity.y < -0.01f);
+        }
     }
 
     void FixedUpdate()
