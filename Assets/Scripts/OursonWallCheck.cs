@@ -15,7 +15,7 @@ public class OursonWallCheck : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.gameObject.name.Contains("Player"))
+        if (!collision.gameObject.name.Contains("Player") && !collision.gameObject.name.Contains("Bullet"))
         {
             grounds.Add(collision);
         }

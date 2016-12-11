@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class OursonAI : MonoBehaviour {
 
+    public int life;
     public bool direction;
     public float speed;
+    public float dieTime;
+
+    private float dieTimeLeft;
+    private bool dead = false;
     private Animator anim;
     private Rigidbody2D rb;
 
@@ -20,17 +25,31 @@ public class OursonAI : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        float dir = direction ? speed : -speed;
-        rb.velocity += new Vector2(dir, 0) * speed;
-        if (dir < 0)
+        if (!dead)
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            float dir = direction ? speed : -speed;
+            rb.velocity += new Vector2(dir, 0) * speed;
+            if (dir < 0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else if (dir > 0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+            anim.SetBool("Walking", rb.velocity.x >= 0.1f || rb.velocity.x <= -0.1f);
         }
-        else if (dir > 0)
+        else
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            dieTimeLeft -= Time.deltaTime;
+            if (dieTimeLeft <= 0)
+            {
+                Destroy(transform.gameObject);
+                return;
+            }
+
+
         }
-        anim.SetBool("Walking", rb.velocity.x >= 0.1f || rb.velocity.x <= -0.1f);
     }
 
     void FixedUpdate()
@@ -46,5 +65,18 @@ public class OursonAI : MonoBehaviour {
     public void WallDetected()
     {
         direction = !direction;
+    }
+
+    public void TakeDamages(int damages)
+    {
+        if (life <= 0)
+            return ;
+        life -= damages;
+        if (life <= 0)
+        {
+            dead = true;
+            dieTimeLeft = dieTime;
+            anim.SetBool("dying", true);
+        }
     }
 }
