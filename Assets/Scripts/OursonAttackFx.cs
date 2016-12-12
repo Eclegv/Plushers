@@ -18,12 +18,12 @@ public class OursonAttackFx : MonoBehaviour {
     private void Update()
     {
         time += Time.deltaTime;
-        if (time > 0.1 && time < 0.27)
+        if (time > 0.6 && time < 0.7)
         {
             for (int i = 0; i < cols.Count; i++)
                 cols[i].gameObject.SendMessage("TakeDamages", damages);
         }
-        if (time >= 0.3)
+        if (time >= 0.8)
             Destroy(transform.gameObject);
     }
 

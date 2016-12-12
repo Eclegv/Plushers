@@ -50,6 +50,12 @@ public class PlayerLifeManager : MonoBehaviour {
         }
     }
 
+    private IEnumerator WaitAndLoad()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+    }
+
     public void TakeDamages(int damages)
     {
         life -= damages;
@@ -58,8 +64,7 @@ public class PlayerLifeManager : MonoBehaviour {
         UpdateHearts();
         if (life == 0)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
-
+            StartCoroutine(WaitAndLoad());
         }
     }
 }

@@ -21,6 +21,7 @@ public class OursonAI : MonoBehaviour {
     private SpriteRenderer spriterenderer;
     private Transform target = null;
     private float attackLeft = 0f;
+    private bool lastframeattack = false;
 
     // Use this for initialization
     void Start ()
@@ -38,57 +39,63 @@ public class OursonAI : MonoBehaviour {
             if (attackLeft > 0)
             {
                 attackLeft -= Time.deltaTime;
-                anim.SetBool("Attacking", false);
+                anim.SetBool("Attacking", attackLeft > 0.2f);
+                lastframeattack = true;
             }
             else
             {
-                if ((hole || wall) && target == null)
-                    direction = !direction;
-                if (target != null)
+                anim.SetBool("Attacking", false);
+                if (lastframeattack)
+                    lastframeattack = false;
+                else
                 {
-                    float xdif = (target.position - transform.position).x;
-                    bool shouldGo = Mathf.Abs(xdif) > 1f && !hole && !wall;
-                    if (xdif < 0)
+                    if ((hole || wall) && target == null)
+                        direction = !direction;
+                    if (target != null)
                     {
-                        direction = false;
-                    }
-                    else if (xdif > 0)
-                    {
-                        direction = true;
-                    }
+                        float xdif = (target.position - transform.position).x;
+                        bool shouldGo = Mathf.Abs(xdif) > 0.7f && !hole && !wall;
+                        if (xdif < 0)
+                        {
+                            direction = false;
+                        }
+                        else if (xdif > 0)
+                        {
+                            direction = true;
+                        }
 
-                    float dir = direction ? speed : -speed;
-                    if (shouldGo)
+                        float dir = direction ? speed : -speed;
+                        if (shouldGo)
+                            rb.velocity += new Vector2(dir, 0) * speed;
+                        if (dir < 0)
+                        {
+                            transform.localScale = new Vector3(1, 1, 1);
+                        }
+                        else if (dir > 0)
+                        {
+                            transform.localScale = new Vector3(-1, 1, 1);
+                        }
+                        if (Mathf.Abs(xdif) <= 0.7f)
+                        {
+                            Instantiate(attack, transform.TransformPoint(-0.6f, 0, 0), Quaternion.identity, transform).GetComponent<OursonAttackFx>().damages = attackPower;
+                            attackLeft = 2f;
+                            anim.SetBool("Attacking", true);
+                        }
+                    }
+                    else if (target == null)
+                    {
+                        float dir = direction ? speed : -speed;
                         rb.velocity += new Vector2(dir, 0) * speed;
-                    if (dir < 0)
-                    {
-                        transform.localScale = new Vector3(1, 1, 1);
-                    }
-                    else if (dir > 0)
-                    {
-                        transform.localScale = new Vector3(-1, 1, 1);
-                    }
-                    if (Mathf.Abs(xdif) <= 1f)
-                    {
-                        Instantiate(attack, transform.TransformPoint(-1, 0, 0), Quaternion.identity, transform).GetComponent<OursonAttackFx>().damages = attackPower;
-                        attackLeft = 2f;
-                        anim.SetBool("Attacking", true);
+                        if (dir < 0)
+                        {
+                            transform.localScale = new Vector3(1, 1, 1);
+                        }
+                        else if (dir > 0)
+                        {
+                            transform.localScale = new Vector3(-1, 1, 1);
+                        }
                     }
                 }
-                else if (target == null)
-                {
-                    float dir = direction ? speed : -speed;
-                    rb.velocity += new Vector2(dir, 0) * speed;
-                    if (dir < 0)
-                    {
-                        transform.localScale = new Vector3(1, 1, 1);
-                    }
-                    else if (dir > 0)
-                    {
-                        transform.localScale = new Vector3(-1, 1, 1);
-                    }
-                }
-
             }
             anim.SetBool("Walking", rb.velocity.x >= 0.1f || rb.velocity.x <= -0.1f);
 
