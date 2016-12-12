@@ -11,7 +11,7 @@ public class PlayerLifeManager : MonoBehaviour {
     public Sprite hearthalf;
     public Sprite heartempty;
 
-    private int life;
+    public int life;
 
     private List<Image> hearts;
 
@@ -23,7 +23,10 @@ public class PlayerLifeManager : MonoBehaviour {
         for (int i = 0; i < maxlife / 2; i++)
         {
             GameObject img = Instantiate(heartPrefab, canvas);
-            img.GetComponent<RectTransform>().anchoredPosition = new Vector3(35 + i * 65, -35);
+            RectTransform r = img.GetComponent<RectTransform>();
+            r.anchoredPosition = new Vector3(35 + i * 65, -35, 0);
+            r.localScale = new Vector3(1, 1, 1);
+            hearts.Add(img.GetComponent<Image>());
         }
         UpdateHearts();
 	}

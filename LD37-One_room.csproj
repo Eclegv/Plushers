@@ -77,8 +77,11 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\BulletScript.cs" />
     <Compile Include="Assets\Scripts\GrayscaleEffect.cs" />
+    <Compile Include="Assets\Scripts\Hit.cs" />
     <Compile Include="Assets\Scripts\OursonAI.cs" />
+    <Compile Include="Assets\Scripts\OursonAttackFx.cs" />
     <Compile Include="Assets\Scripts\OursonHoleDetect.cs" />
+    <Compile Include="Assets\Scripts\OursonPlayerDetect.cs" />
     <Compile Include="Assets\Scripts\OursonWallCheck.cs" />
     <Compile Include="Assets\Scripts\PlayerLifeManager.cs" />
     <Compile Include="Assets\Scripts\PlayerPlatformManager.cs" />

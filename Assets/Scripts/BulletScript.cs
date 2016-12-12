@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class BulletScript : MonoBehaviour {
             return ;
         if (collision.gameObject.name.Contains("Enemy"))
         {
-            collision.gameObject.SendMessage("TakeDamages", damages);
+            collision.gameObject.SendMessage("TakeDamages", new Hit(transform.up * 2f, 1));
             Destroy(transform.gameObject);
             return ;
         }

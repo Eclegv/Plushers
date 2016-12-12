@@ -6,6 +6,7 @@ public class PlayerScript : MonoBehaviour {
 
     public float speed = 1f;
     public float jumpPower = 10f;
+    public float damageCooldown = 2f;
     public Camera cam;
     public GameObject bullet;
     public float fireCoolDown;
@@ -13,12 +14,17 @@ public class PlayerScript : MonoBehaviour {
 
     private float fireCdleft = 0;
     private float moveAfterFire = 0;
+    private float damageCdLeft = 0;
     private Animator anim;
     private Rigidbody2D rb;
     private bool canJump = true;
     private List<Collider2D> grounds;
     private GameObject scripts;
     private PlayerPlatformManager platforms;
+    private PlayerLifeManager life;
+    private SpriteRenderer spriterenderer;
+
+    private Color transparent;
 
 
 	// Use this for initialization
@@ -27,7 +33,10 @@ public class PlayerScript : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         grounds = new List<Collider2D>();
         scripts = GameObject.Find("Scripts");
-        platforms = scripts.GetComponents<PlayerPlatformManager>()[0];
+        platforms = scripts.GetComponent<PlayerPlatformManager>();
+        life = scripts.GetComponent<PlayerLifeManager>();
+        spriterenderer = GetComponent<SpriteRenderer>();
+        transparent = new Color(1, 1, 1, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -54,6 +63,17 @@ public class PlayerScript : MonoBehaviour {
         {
             cam.transform.position = new Vector3(transform.position.x, transform.position.y, cam.transform.position.z);
         }
+
+        if (damageCdLeft > 0)
+        {
+            damageCdLeft -= Time.deltaTime;
+            if (((int)(damageCdLeft * 100)) % 2 == 0)
+                spriterenderer.color = transparent;
+            else
+                spriterenderer.color = Color.white;
+        }
+        else
+            spriterenderer.color = Color.white;
 
         if (moveAfterFire > 0)
         {
@@ -117,5 +137,13 @@ public class PlayerScript : MonoBehaviour {
     void FixedUpdate()
     {
         rb.velocity = new Vector2(rb.velocity.x / 1.2f, rb.velocity.y);
+    }
+
+    public void TakeDamages(int damages)
+    {
+        if (damageCdLeft > 0)
+            return ;
+        life.TakeDamages(damages);
+        damageCdLeft = 2f;
     }
 }

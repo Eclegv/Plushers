@@ -19,6 +19,8 @@ public class OursonHoleDetect : MonoBehaviour {
         {
             grounds.Add(collision);
         }
+        if (grounds.Count > 0)
+            transform.parent.gameObject.SendMessage("SetHole", false);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -28,7 +30,7 @@ public class OursonHoleDetect : MonoBehaviour {
             grounds.Remove(collision);
         }
         if (grounds.Count == 0)
-            transform.parent.gameObject.SendMessage("HoleDetected");
+            transform.parent.gameObject.SendMessage("SetHole", true);
     }
 
     // Update is called once per frame
