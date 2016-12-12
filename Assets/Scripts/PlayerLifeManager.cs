@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerLifeManager : MonoBehaviour {
@@ -55,5 +56,10 @@ public class PlayerLifeManager : MonoBehaviour {
         if (life < 0)
             life = 0;
         UpdateHearts();
+        if (life == 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex, LoadSceneMode.Single);
+
+        }
     }
 }
