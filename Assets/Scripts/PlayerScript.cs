@@ -110,25 +110,6 @@ public class PlayerScript : MonoBehaviour {
                 }
                 else
                 {
-                    anim.SetBool("Shooting", false);
-                    float dir = Input.GetAxis("Horizontal");
-                    rb.velocity += new Vector2(dir, 0) * speed;
-                    if (dir < 0)
-                    {
-                        transform.localScale = new Vector3(-1, 1, 1);
-                    }
-                    else if (dir > 0)
-                    {
-                        transform.localScale = new Vector3(1, 1, 1);
-                    }
-                    anim.SetBool("Walking", rb.velocity.x >= 0.1f || rb.velocity.x <= -0.1f);
-
-                    if (Input.GetButtonDown("Jump") && canJump)
-                    {
-                        rb.velocity += new Vector2(rb.velocity.x, jumpPower);
-                        canJump = false;
-                    }
-
                     if (Input.GetButtonDown("Fire3"))
                     {
                         if (platforms.GetCount() > 0)
